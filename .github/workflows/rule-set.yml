@@ -36,15 +36,15 @@ jobs:
         working-directory: work
         run: |
           # 导出 geoip 规则
-          ./sing-box geoip export cn
-          ./sing-box geoip export private
+          ./sing-box geoip export cn -o ./output/geoip-cn.json
+          ./sing-box geoip export private -o ./output/geoip-private.json
           
           # 导出 geosite 规则
-          ./sing-box geosite export cn
-          ./sing-box geosite export private
-          ./sing-box geosite export openai
-          ./sing-box geosite export google-gemini
-          ./sing-box geosite export geolocation-!cn
+          ./sing-box geosite export cn -o ./output/geosite-cn.json
+          ./sing-box geosite export private -o ./output/geosite-private.json
+          ./sing-box geosite export openai -o ./output/geosite-openai.json
+          ./sing-box geosite export google-gemini -o ./output/geosite-gemini.json
+          ./sing-box geosite export geolocation-!cn -o ./output/geosite-geolocation-!cn.json
 
       - name: Commit and push changes
         run: |
