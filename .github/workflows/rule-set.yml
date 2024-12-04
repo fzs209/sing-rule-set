@@ -38,8 +38,6 @@ jobs:
           # 导出 geoip 规则
           ./sing-box geoip export cn
           ./sing-box geoip export private
-          ./sing-box geoip export openai
-          ./sing-box geoip export google-gemini
           
           # 导出 geosite 规则
           ./sing-box geosite export cn
