@@ -43,7 +43,7 @@ jobs:
           ./sing-box geosite export cn -o ./output/geosite-cn.json
           ./sing-box geosite export private -o ./output/geosite-private.json
           ./sing-box geosite export openai -o ./output/geosite-openai.json
-          ./sing-box geosite export google-gemini -o ./output/geosite-gemini.json
+          ./sing-box geosite export google-gemini -o ./output/geosite-google-gemini.json
           ./sing-box geosite export geolocation-!cn -o ./output/geosite-geolocation-!cn.json
 
       - name: Commit and push changes
