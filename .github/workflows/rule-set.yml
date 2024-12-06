@@ -22,37 +22,64 @@ jobs:
           # 下载最新的 geosite.db 和 geoip.db
           curl -L -o work/geosite.db https://github.com/lyc8503/sing-box-rules/releases/latest/download/geosite.db
           curl -L -o work/geoip.db https://github.com/lyc8503/sing-box-rules/releases/latest/download/geoip.db
-          
-          # 获取最新的 sing-box 版本
+                    
+          # 下载并解压最新版 sing-box
           LATEST_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-          
-          # 下载并解压 sing-box
-          curl -L -o work/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${LATEST_VERSION#v}-linux-amd64.tar.gz
-          tar -xzf work/sing-box.tar.gz -C work/
+          curl -L -o work/sing-box-latest.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-${LATEST_VERSION#v}-linux-amd64.tar.gz
+          tar -xzf work/sing-box-latest.tar.gz -C work/
           chmod +x work/sing-box-*/sing-box
-          mv work/sing-box-*/sing-box work/
-          
-      - name: Export rules
+          mv work/sing-box-*/sing-box work/sing-box-latest
+
+          # 下载并解压 1.8.8 版本的 sing-box
+          curl -L -o work/sing-box-1.8.8.tar.gz https://github.com/SagerNet/sing-box/releases/download/v1.8.8/sing-box-1.8.8-linux-amd64.tar.gz
+          tar -xzf work/sing-box-1.8.8.tar.gz -C work/
+          chmod +x work/sing-box-*/sing-box
+          mv work/sing-box-*/sing-box work/sing-box-1.8.8
+
+      - name: Export rules with latest version
         working-directory: work
         run: |
-          # 导出 geoip 规则
-          ./sing-box geoip export cn -o ./output/geoip-cn.json
-          ./sing-box geoip export private -o ./output/geoip-private.json
-          
-          # 导出 geosite 规则
-          ./sing-box geosite export cn -o ./output/geosite-cn.json
-          ./sing-box geosite export private -o ./output/geosite-private.json
-          ./sing-box geosite export openai -o ./output/geosite-openai.json
-          ./sing-box geosite export google-gemini -o ./output/geosite-google-gemini.json
-          ./sing-box geosite export geolocation-!cn -o ./output/geosite-geolocation-!cn.json
+          # 使用最新版本导出规则
+          ./sing-box-latest geoip export cn -o ./output/geoip-cn.json
+          ./sing-box-latest geoip export private -o ./output/geoip-private.json
+          ./sing-box-latest geosite export cn -o ./output/geosite-cn.json
+          ./sing-box-latest geosite export private -o ./output/geosite-private.json
+          ./sing-box-latest geosite export openai -o ./output/geosite-openai.json
+          ./sing-box-latest geosite export google-gemini -o ./output/geosite-google-gemini.json
+          ./sing-box-latest geosite export geolocation-!cn -o ./output/geosite-geolocation-!cn.json
 
-      - name: Commit and push changes
+      - name: Export rules with v1.8.8
+        working-directory: work
         run: |
-          # 配置 Git
+          # 使用 1.8.8 版本导出规则
+          mkdir -p output-1.8.8
+          ./sing-box-1.8.8 geoip export cn -o ./output-1.8.8/geoip-cn.json
+          ./sing-box-1.8.8 geoip export private -o ./output-1.8.8/geoip-private.json
+          ./sing-box-1.8.8 geosite export cn -o ./output-1.8.8/geosite-cn.json
+          ./sing-box-1.8.8 geosite export private -o ./output-1.8.8/geosite-private.json
+          ./sing-box-1.8.8 geosite export openai -o ./output-1.8.8/geosite-openai.json
+          ./sing-box-1.8.8 geosite export google-gemini -o ./output-1.8.8/geosite-google-gemini.json
+          ./sing-box-1.8.8 geosite export geolocation-!cn -o ./output-1.8.8/geosite-geolocation-!cn.json
+
+      - name: Commit and push changes to main branch
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          
-          # 添加、提交并推送更改
           git add .
           git commit -m "Auto update rules $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
+
+      - name: Push 1.8.8 version rules to v1.8.8 branch
+        run: |
+          # 创建并切换到 v1.8.8 分支
+          git checkout -b v1.8.8 || git checkout v1.8.8
+          git pull origin v1.8.8 || true
+          
+          # 移动 1.8.8 版本的规则到根目录
+          rm -f *.json
+          mv work/output-1.8.8/* .
+          
+          # 提交并推送到 v1.8.8 分支
+          git add .
+          git commit -m "Auto update rules (v1.8.8) $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push -u origin v1.8.8
