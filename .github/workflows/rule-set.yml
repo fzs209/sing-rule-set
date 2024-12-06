@@ -60,10 +60,10 @@ jobs:
           ./sing-box-1.8.8 geosite export openai -o ./output-1.8.8/geosite-openai.json
           ./sing-box-1.8.8 geosite export google-gemini -o ./output-1.8.8/geosite-google-gemini.json
           ./sing-box-1.8.8 geosite export geolocation-!cn -o ./output-1.8.8/geosite-geolocation-!cn.json
+          rm -rf geo* sing* 
 
       - name: Commit and push changes to main branch
         run: |
-          rm -rf geo* sing* 
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add .
