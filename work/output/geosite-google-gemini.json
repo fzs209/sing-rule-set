@@ -24,7 +24,8 @@
         "generativelanguage.googleapis.com",
         "jules.google.com",
         "geller-pa.googleapis.com",
-        "aisandbox-pa.googleapis.com"
+        "aisandbox-pa.googleapis.com",
+        "aida.googleapis.com"
       ],
       "domain_suffix": [
         ".gemini.google",
@@ -44,7 +45,8 @@
         ".generativelanguage.googleapis.com",
         ".jules.google.com",
         ".geller-pa.googleapis.com",
-        ".aisandbox-pa.googleapis.com"
+        ".aisandbox-pa.googleapis.com",
+        ".aida.googleapis.com"
       ]
     }
   ]
